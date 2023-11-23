@@ -5,6 +5,8 @@ import configuration from './config/configuration';
 import { TypeOrmHealthIndicator } from '@nestjs/terminus';
 import { HealthModule } from './health/health.module';
 import { TypeOrmConfigService } from './config/TypeOrmConfig';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -14,12 +16,16 @@ import { TypeOrmConfigService } from './config/TypeOrmConfig';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
-        return TypeOrmConfigService.factory(configService);
+      useFactory: async (configService: ConfigService) => {
+        return {
+          ...TypeOrmConfigService.factory(configService),
+          entities: [User],
+        };
       },
       inject: [ConfigService],
     }),
     HealthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [TypeOrmHealthIndicator],

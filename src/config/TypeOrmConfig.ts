@@ -1,11 +1,11 @@
 import { ConfigService } from '@nestjs/config';
-import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export class TypeOrmConfigService implements TypeOrmOptionsFactory {
+export class TypeOrmConfigService {
   private static instance: TypeOrmConfigService = null;
   private constructor(private readonly configService: ConfigService) {}
 
-  static factory(configService: ConfigService): TypeOrmModuleOptions {
+  static factory(configService: ConfigService) {
     if (!this.instance) {
       this.instance = new TypeOrmConfigService(configService);
     }
@@ -21,7 +21,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: this.configService.get<string>('database.database'),
       synchronize: this.configService.get<boolean>('database.synchronize'),
       type: 'postgres',
-      entities: [],
+      autoLoadEntities: true,
     };
   }
 }
